@@ -41,6 +41,18 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
 - `QianfanClient` 只管调用，失败一律抛 `QianfanError`，**不许在客户端里 return 兜底文案**；
   否则上层无法通过 `fallback_used` 告知用户已降级。
 - 不配密钥也必须能启动跑通（纯规则模式），评审和本地开发都依赖这点。
+- **模型解析出的偏好只是输入，不是许可**：解析结果必须原封不动过一遍
+  `DishRepository.find_candidates`，绝不能因为「模型已经考虑过过敏原」就跳过过滤。
+- 模型脏输出一律「能救的部分先救下来」，不要让整条请求失败：
+  `extract_json` 捞代码块、`build_preference` 逐字段剔非法值、
+  推荐语缺条目就单条兜底。
+- 关键词规则里**金额正则必须带「块/元」单位**。曾经写成可选，
+  结果「排队不超过 10 分钟」被解析成预算 10 元、「蛋白质至少 30 克」
+  被解析成最低预算 30 元——凭空给用户加了没提的条件。
+- 单字口味词要过 `word_hit`（`FLAVOR_EXCLUSIONS`）：「海鲜」里的「鲜」、
+  「控糖」里的「糖」、「芝麻」里的「麻」都不是口味诉求。
+- 过敏原关键词必须与「过敏/忌/不能吃」标记**在同一分句**，
+  否则「海鲜过敏，想吃鸡蛋」会把蛋类也当成过敏原。
 
 ## 验证方式（重要）
 
@@ -77,16 +89,17 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
 - [x] `QianfanClient`：httpx 异步、token 缓存与并发去重、指数退避重试、
       熔断半开探测；只抛 `QianfanError` 家族，不做业务兜底。
       测试用 `httpx.MockTransport`，不联网不需要真密钥
-- [ ] **下一步：Agent 编排 `app/agent/`**
-      两处调模型，各自都要有降级路径：
-      1. 偏好解析 `parse_preference`：自然语言 → UserPreference，
-         要求模型输出 JSON 并用 Pydantic 校验；模型不可用或 JSON 解析失败时
-         降级到关键词规则（辣/清淡/减脂/便宜等词表匹配）
-      2. 推荐语生成 `write_comments`：把 `build_reasons` 的规则理由作为事实依据
-         喂进 prompt，让模型有据可依少编造；失败就直接用规则理由填 `comment`
-      解析结果必须再过一遍规则层过滤——模型解析出的过敏原只是「输入」，
-      不是「许可」，安全判断始终由 DishRepository 兜底
-      编排入口产出 `RecommendResponse`，降级时置 `fallback_used=True` 并写 `message`
+- [x] `app/agent/`：`PreferenceParser`（模型 JSON + 关键词规则降级）、
+      `keyword_rules.py`（词表与正则）、`CommentWriter`（规则理由作事实依据）、
+      `RecommendAgent`（四层串联 + 凑整餐）
+- [ ] **下一步：FastAPI 接口 `app/api/`**
+      `POST /api/recommend`（body 收 text 或结构化 preference）、
+      `GET /api/dishes`（查询/搜索）、`GET /api/canteens`。
+      路由要薄：只做请求校验和依赖注入，业务逻辑全在 agent/services 里。
+      `main.py` 里配 CORS、lifespan 关闭时调 `close_client()`、
+      挂 `/health` 探活并回报 `qianfan_configured()` 状态。
+      异常处理：`QianfanError` 不该漏成 500，编排层已兜底，
+      路由层只需处理请求参数错误（422）和未知异常
 - [ ] Agent 编排 `app/agent/`：偏好解析 + 推荐语生成 + 凑整餐 MealPlan
 - [ ] FastAPI 接口 `app/api/`：推荐、菜品查询、食堂列表
 - [ ] 前端页面
