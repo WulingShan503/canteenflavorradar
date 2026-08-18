@@ -25,6 +25,7 @@
 ```
 backend/
   app/
+    config.py        配置，千帆密钥只从环境变量 / .env 读
     models/          数据模型（Pydantic）
       enums.py       共享词表：口味、菜系、品类、餐段、饮食标签、过敏原
       dish.py        菜品、食堂、营养成分
@@ -33,6 +34,7 @@ backend/
     services/
       dish_repository.py  数据加载 + 硬性过滤 + 条件过严时逐级放宽
       scorer.py      六维加权打分、排序、多样性约束、规则版推荐理由
+      qianfan_client.py  千帆调用：token 缓存、超时重试、熔断
     data/
       dishes.json    示例菜品数据（3 个食堂 30 道菜）
       canteens.json  食堂基础信息
@@ -72,7 +74,7 @@ backend/
 - [x] 项目骨架、数据模型、示例数据
 - [x] 数据仓库：硬性过滤与逐级放宽
 - [x] 打分排序器：六维加权、场景化权重、多样性约束
-- [ ] 千帆平台客户端
+- [x] 千帆平台客户端：token 缓存、超时重试、熔断降级
 - [ ] Agent 编排：偏好解析 + 推荐语生成
 - [ ] FastAPI 接口
 - [ ] 前端页面
@@ -92,6 +94,26 @@ source .venv/bin/activate
 pip install -r requirements.txt
 pytest
 ```
+
+## 配置千帆
+
+复制 `backend/.env.example` 为 `backend/.env`，填入自己的密钥：
+
+```
+QIANFAN_AK=你的 API Key
+QIANFAN_SK=你的 Secret Key
+```
+
+密钥在百度智能云控制台 → 千帆大模型平台 → 应用接入里创建应用后获取。
+`.env` 已在 `.gitignore` 中，不会被提交。
+
+**不配密钥也能启动**：`Settings.qianfan_configured()` 返回 False 时系统走纯规则模式，
+少了自然语言偏好解析和大模型推荐语，硬性过滤与打分排序照常工作。
+
+千帆客户端的容错分三层：单次请求 12 秒超时 → 最多重试 2 次（指数退避，只重试超时、
+5xx 和限流类错误码）→ 连续失败 3 次触发熔断，60 秒内直接短路不再白等，
+冷却结束自动放一个探测请求。客户端本身只抛 `QianfanError`，
+降级成规则结果是上层 Agent 的职责，两边分开便于各自测试。
 
 ## 示例数据说明
 

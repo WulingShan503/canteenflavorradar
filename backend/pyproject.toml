@@ -8,6 +8,9 @@ requires-python = ">=3.11"
 testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "-q"
+# 千帆客户端是异步的，用 asyncio_mode=auto 免得每个协程用例都挂装饰器
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff]
 line-length = 100

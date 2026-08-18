@@ -22,6 +22,7 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
 | 硬性过滤 | `app/services/dish_repository.py` | 纯规则 |
 | 排序打分 | `app/services/scorer.py` | 纯规则，输出 ScoreBreakdown |
 | 推荐语生成 | `app/agent/` | 大模型，失败用规则理由兜底 |
+| 模型调用 | `app/services/qianfan_client.py` | 只管发请求，失败抛异常不兜底 |
 | HTTP 接口 | `app/api/` | FastAPI 路由，薄一层 |
 
 铁律：
@@ -37,6 +38,9 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
 - 用户没提的维度给中性分 `NEUTRAL`（0.5），不做惩罚；不能因为「没说预算」就扣分。
 - 排序必须稳定可复现：并列时按销量、评分、菜品 id 逐级兜底。
 - 千帆的 API Key 只从环境变量读，不写进代码或提交进仓库。
+- `QianfanClient` 只管调用，失败一律抛 `QianfanError`，**不许在客户端里 return 兜底文案**；
+  否则上层无法通过 `fallback_used` 告知用户已降级。
+- 不配密钥也必须能启动跑通（纯规则模式），评审和本地开发都依赖这点。
 
 ## 验证方式（重要）
 
@@ -69,11 +73,20 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
 - [x] `DishRepository`：硬性过滤 + 逐级放宽 + pytest 用例
 - [x] `DishScorer`：六维加权打分、三套场景权重、`rank_diverse` 多样性约束、
       规则版 `reasons`；`build_reasons` 的输出后续要作为事实依据喂进推荐语 prompt
-- [ ] **下一步：千帆客户端 `app/services/qianfan_client.py`**
-      httpx 异步调用，access_token 缓存与刷新，超时/重试/熔断，
-      失败一律抛自定义异常交由上层降级——客户端本身不做业务兜底。
-      密钥走环境变量（`QIANFAN_AK` / `QIANFAN_SK`），不许进仓库，
-      同步补一份 `.env.example`
+- [x] `app/config.py` + `.env.example`：pydantic-settings 配置，密钥只从环境变量读
+- [x] `QianfanClient`：httpx 异步、token 缓存与并发去重、指数退避重试、
+      熔断半开探测；只抛 `QianfanError` 家族，不做业务兜底。
+      测试用 `httpx.MockTransport`，不联网不需要真密钥
+- [ ] **下一步：Agent 编排 `app/agent/`**
+      两处调模型，各自都要有降级路径：
+      1. 偏好解析 `parse_preference`：自然语言 → UserPreference，
+         要求模型输出 JSON 并用 Pydantic 校验；模型不可用或 JSON 解析失败时
+         降级到关键词规则（辣/清淡/减脂/便宜等词表匹配）
+      2. 推荐语生成 `write_comments`：把 `build_reasons` 的规则理由作为事实依据
+         喂进 prompt，让模型有据可依少编造；失败就直接用规则理由填 `comment`
+      解析结果必须再过一遍规则层过滤——模型解析出的过敏原只是「输入」，
+      不是「许可」，安全判断始终由 DishRepository 兜底
+      编排入口产出 `RecommendResponse`，降级时置 `fallback_used=True` 并写 `message`
 - [ ] Agent 编排 `app/agent/`：偏好解析 + 推荐语生成 + 凑整餐 MealPlan
 - [ ] FastAPI 接口 `app/api/`：推荐、菜品查询、食堂列表
 - [ ] 前端页面
