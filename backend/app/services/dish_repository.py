@@ -123,8 +123,12 @@ class DishRepository:
             if not _step_applies(pref, step):
                 continue
             relaxed.add(step)
-            notes.append(RELAX_LABELS[step])
-            candidates = self._filter(pref, relaxed=relaxed)
+            widened = self._filter(pref, relaxed=relaxed)
+            # 只有真的多筛出菜才算「放宽过」。否则会出现「已上调热量上限」
+            # 但结果里每道菜都在原上限之内的怪提示，用户会以为系统没听懂。
+            if len(widened) > len(candidates):
+                notes.append(RELAX_LABELS[step])
+            candidates = widened
             if len(candidates) >= min_results:
                 break
 

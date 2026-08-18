@@ -107,6 +107,25 @@ class TestRelaxation:
         _, notes = repo.find_candidates(pref, min_results=3)
         assert "放宽了排队时长要求" not in notes
 
+    def test_ineffective_relaxation_not_reported(self, repo: DishRepository):
+        """放宽了但一道菜都没多筛出来时，不能谎报已放宽。
+
+        素食里 3 元以内只有 2 道，上调到 3.6 元还是那 2 道。
+        这时提示「已上调预算上限」会让用户以为系统给了更贵的选择，
+        对着结果一看全是原价位，反而像出了故障。
+        """
+        pref = UserPreference(dietary_tags=[DietaryTag.VEGETARIAN], budget_max=3.0)
+        candidates, notes = repo.find_candidates(pref, min_results=5)
+        assert candidates, "至少还有白米饭和豆浆"
+        assert "略微上调了预算上限" not in notes
+
+    def test_effective_relaxation_still_reported(self, repo: DishRepository):
+        """真的靠放宽多筛出菜时，必须照实告知。"""
+        pref = UserPreference(categories=[Category.COMBO], budget_max=3.0)
+        candidates, notes = repo.find_candidates(pref, min_results=3)
+        assert candidates
+        assert notes, "放宽确实起作用了就得说明"
+
 
 class TestPreferenceModel:
     def test_conflicting_flavor_resolved_to_liked(self):

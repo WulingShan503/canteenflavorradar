@@ -71,6 +71,23 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
 
 改动 `app/data/*.json` 后也用 Node 校验一遍字段完整性和枚举取值合法性。
 
+### 前端要真在浏览器里跑一遍
+
+本机装的是 Edge（`C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`）。
+`--dump-dom` 和 `--screenshot` 在这台机器上输出为空（被同步登录弹窗抢了焦点），
+**要用 CDP**：带 `--headless=new --remote-debugging-port=9222 --user-data-dir=<临时目录>`
+启动，再用 Node 走 WebSocket 发 `Page.navigate` / `Runtime.evaluate` /
+`Page.captureScreenshot`。这样能拿到真实的 DOM、控制台报错和截图。
+
+必查项：`Runtime.exceptionThrown`（有没有 JS 异常）、`Log.entryAdded`（资源 404）、
+渲染出的卡片数、窄屏 375px 有没有横向溢出。
+纯静态页也要验 live 模式——用 Node 写个临时 stub server 提供 `/api/*`，
+就能测到 `api.js` 的探活切换逻辑，不必等 Python 环境。
+
+**`node --check` 每个 JS 文件**。分块写大文件时很容易留下重复的收尾括号
+（这次 `app.js` 末尾就多了一个 `})();`，浏览器里表现为整个脚本不执行、
+页面只有静态骨架），而这类错误光看渲染结果不容易定位。
+
 ## 收尾流程
 
 每步做完，按顺序：
@@ -98,14 +115,23 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
       `RecommendAgent`（四层串联 + 凑整餐）
 - [x] `app/api/`（routes + schemas）与 `app/main.py`：五个接口、CORS、
       lifespan 预热与释放连接池、中文化的 422 报错、500 兜底不漏堆栈
-- [ ] **下一步：前端页面**
-      一个单页就够：输入框收自然语言 + 可选的偏好表单，
-      调 `POST /api/recommend` 渲染菜品卡片。
-      要展示 `breakdown` 各维度得分（这是本项目「可解释」的卖点），
-      `fallback_used` 为 True 时提示「智能解析暂时不可用」，
-      `message` 非空时展示放宽说明。
-      技术选型待定，纯静态 HTML + 原生 JS 最省事，
-      放 `frontend/` 目录，别引一堆构建工具
+- [x] `frontend/`：纯静态单页（无构建工具）。`api.js` 自动在真实后端与
+      内置 `demo-engine.js`（规则层等价 JS 移植）之间切换，
+      所以 `file://` 双击打开也能看到完整效果
+- [ ] 后端骨架已完整。可选的后续方向：菜品评价写入、真实菜单接入、
+      推荐结果埋点与调参、Docker 化部署
+
+## 前端约定
+
+`frontend/js/demo-engine.js` 是后端规则层的等价移植，
+**改了 `dish_repository.py` 或 `scorer.py` 的规则，必须同步改它**，
+否则演示模式和真实后端的结果会不一致。对应关系写在该文件顶部注释里。
+
+改了 `backend/app/data/*.json` 后跑 `node scripts/build-demo-data.js` 同步快照。
+数据必须挂在 `global.` 上（顶层 `const` 不会成为 `window` 的属性）。
+
+得分条长度用「占该维权重上限的比例」，不是绝对分——
+口味满分 30 和便利满分 10 画在一起没法比。权重为 0 的维度不画。
 - [ ] Agent 编排 `app/agent/`：偏好解析 + 推荐语生成 + 凑整餐 MealPlan
 - [ ] FastAPI 接口 `app/api/`：推荐、菜品查询、食堂列表
 - [ ] 前端页面

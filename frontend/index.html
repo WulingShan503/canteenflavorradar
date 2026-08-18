@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食堂味蕾雷达 · 智能选餐</title>
+<meta name="description" content="基于大模型 Agent 的高校食堂选餐系统，把安全约束交给规则、把推荐理由交给大模型。">
+<!-- 内联 emoji 图标，省掉一个 favicon.ico 的 404 请求 -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🍜</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#results">跳到推荐结果</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">🍜</span>
+      <div>
+        <h1>食堂味蕾雷达</h1>
+        <p class="tagline">说一句话，帮你挑今天吃什么</p>
+      </div>
+    </div>
+    <div class="mode-badge" id="mode-badge" role="status" aria-live="polite">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="mode-text">正在检测运行模式…</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===== 输入区 ===== -->
+  <section class="panel search-panel" aria-labelledby="search-heading">
+    <h2 id="search-heading" class="sr-only">输入用餐需求</h2>
+
+    <form id="recommend-form" novalidate>
+      <div class="field">
+        <label for="text-input">今天想吃点什么？</label>
+        <div class="input-row">
+          <input
+            type="text"
+            id="text-input"
+            name="text"
+            maxlength="300"
+            placeholder="例如：想吃点辣的，20 块以内，最近在减脂，不要香菜"
+            autocomplete="off"
+            aria-describedby="text-hint">
+          <button type="submit" class="btn btn-primary" id="submit-btn">
+            <span class="btn-label">帮我推荐</span>
+          </button>
+        </div>
+        <p class="hint" id="text-hint">
+          口味、预算、忌口、餐段、食堂都能直接说。也可以留空，看看今天的热门。
+        </p>
+      </div>
+
+      <div class="chips" role="group" aria-label="快捷示例">
+        <button type="button" class="chip" data-example="想吃点辣的，20块以内">辣的，20 块以内</button>
+        <button type="button" class="chip" data-example="最近在减脂，高蛋白低热量，400大卡以内">减脂高蛋白</button>
+        <button type="button" class="chip" data-example="不吃辣，清淡点，养胃">不吃辣，清淡</button>
+        <button type="button" class="chip" data-example="花生过敏，不要香菜">花生过敏，忌香菜</button>
+        <button type="button" class="chip" data-example="二食堂，排队不超过10分钟，便宜点">二食堂，少排队</button>
+        <button type="button" class="chip" data-example="中午想吃川菜，15块以上，吃好点">午餐吃好点</button>
+      </div>
+
+      <details class="advanced" id="advanced">
+        <summary>
+          <span>更精确一点（可选）</span>
+          <span class="summary-hint">勾选的条件优先于文字描述</span>
+        </summary>
+
+        <div class="advanced-body">
+          <fieldset>
+            <legend>喜欢的口味</legend>
+            <div class="checks" id="flavor-checks"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>饮食要求</legend>
+            <div class="checks" id="dietary-checks"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>
+              过敏原（必须规避）
+              <span class="legend-note">安全约束，由规则层强制过滤，任何情况下都不会放宽</span>
+            </legend>
+            <div class="checks" id="allergen-checks"></div>
+          </fieldset>
+
+          <div class="grid-fields">
+            <div class="field">
+              <label for="budget-max">预算上限（元）</label>
+              <input type="number" id="budget-max" min="1" max="200" step="0.5" placeholder="不限">
+            </div>
+            <div class="field">
+              <label for="spicy-tolerance">能接受的辣度</label>
+              <select id="spicy-tolerance">
+                <option value="">不限</option>
+                <option value="0">完全不吃辣</option>
+                <option value="1">微微一点</option>
+                <option value="2">微辣</option>
+                <option value="3">中辣</option>
+                <option value="4">重辣</option>
+                <option value="5">越辣越好</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="canteen-select">食堂</label>
+              <select id="canteen-select">
+                <option value="">不限</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="meal-period">餐段</label>
+              <select id="meal-period">
+                <option value="">不限</option>
+                <option value="早餐">早餐</option>
+                <option value="午餐">午餐</option>
+                <option value="晚餐">晚餐</option>
+                <option value="夜宵">夜宵</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="max-wait">最长排队（分钟）</label>
+              <input type="number" id="max-wait" min="0" max="120" step="1" placeholder="不限">
+            </div>
+            <div class="field">
+              <label for="limit-select">推荐几道</label>
+              <select id="limit-select">
+                <option value="3">3 道</option>
+                <option value="5" selected>5 道</option>
+                <option value="8">8 道</option>
+                <option value="12">12 道</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="dislike-input">忌口食材</label>
+            <input type="text" id="dislike-input" placeholder="用逗号分隔，如：香菜, 内脏" autocomplete="off">
+          </div>
+
+          <label class="switch">
+            <input type="checkbox" id="meal-plan-toggle">
+            <span>顺便帮我凑一份完整的餐（主食 + 荤菜 + 素菜）</span>
+          </label>
+
+          <div class="advanced-actions">
+            <button type="button" class="btn btn-ghost" id="reset-btn">清空所有条件</button>
+          </div>
+        </div>
+      </details>
+    </form>
+  </section>
+
+  <!-- ===== 状态提示 ===== -->
+  <div id="notice-area" aria-live="polite"></div>
+
+  <!-- ===== 结果区 ===== -->
+  <section id="results" aria-labelledby="results-heading" tabindex="-1">
+    <div class="results-head">
+      <h2 id="results-heading">推荐结果</h2>
+      <p class="results-meta" id="results-meta"></p>
+    </div>
+
+    <div id="parsed-box" class="parsed-box" hidden>
+      <h3>系统这样理解你的需求</h3>
+      <div class="parsed-tags" id="parsed-tags"></div>
+    </div>
+
+    <div id="card-list" class="card-list"></div>
+
+    <div id="meal-plan-box" class="panel meal-plan" hidden>
+      <h3>凑一份完整的餐</h3>
+      <p class="meal-plan-summary" id="meal-plan-summary"></p>
+      <ul class="meal-plan-list" id="meal-plan-list"></ul>
+    </div>
+  </section>
+
+  <!-- ===== 说明区 ===== -->
+  <section class="panel about" aria-labelledby="about-heading">
+    <h2 id="about-heading">这套系统怎么决定推荐什么</h2>
+    <p>
+      核心是把「<strong>能不能吃</strong>」和「<strong>有多想吃</strong>」拆开处理。
+      过敏原、忌口、饮食限制这类安全约束由确定性的规则代码把关，
+      不交给可能产生幻觉的大模型；而「为什么推荐这道菜」需要语感，
+      规则写出来生硬，正好交给大模型。模型不可用时系统降级但不瘫痪。
+    </p>
+    <ol class="flow">
+      <li>
+        <span class="flow-tag flow-ai">大模型</span>
+        <strong>偏好解析</strong>
+        <span>把「想吃辣的，别太贵」变成结构化条件，失败时降级到关键词规则</span>
+      </li>
+      <li>
+        <span class="flow-tag flow-rule">规则</span>
+        <strong>硬性过滤</strong>
+        <span>过敏原、忌口、饮食限制、预算与辣度上限。条件太苛刻时逐级放宽，但过敏原和饮食限制永不放宽</span>
+      </li>
+      <li>
+        <span class="flow-tag flow-rule">规则</span>
+        <strong>打分排序</strong>
+        <span>口味、菜系、预算、营养、口碑、便利度六维加权，得分明细全部保留，可解释可复现</span>
+      </li>
+      <li>
+        <span class="flow-tag flow-ai">大模型</span>
+        <strong>推荐语生成</strong>
+        <span>以规则算出的理由为事实依据组织语言，失败时直接展示规则理由</span>
+      </li>
+    </ol>
+    <p class="about-note" id="about-note"></p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>食堂味蕾雷达 · 首届全国人工智能应用创新大赛校赛参赛作品</p>
+    <p class="footer-note">示例数据为模拟菜单，仅用于演示筛选与打分逻辑。</p>
+  </div>
+</footer>
+
+<!-- 数据与逻辑：demo-data 必须在 demo-engine 之前 -->
+<script src="js/demo-data.js"></script>
+<script src="js/demo-engine.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

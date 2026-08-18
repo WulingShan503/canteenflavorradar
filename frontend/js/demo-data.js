@@ -1,0 +1,1374 @@
+/* 演示用数据快照，由 backend/app/data/*.json 生成，不要手改。
+ * 重新生成：node scripts/build-demo-data.js
+ * 内联成 JS 是为了让页面用 file:// 直接打开也能跑（fetch 本地 JSON 会被 CORS 挡住）。
+ */
+(function (global) {
+  "use strict";
+  global.DEMO_CANTEENS = [
+  {
+    "name": "一食堂",
+    "location": "主校区·中心广场东侧",
+    "open_periods": [
+      "早餐",
+      "午餐",
+      "晚餐"
+    ],
+    "crowd_level": 4
+  },
+  {
+    "name": "二食堂",
+    "location": "主校区·图书馆北侧",
+    "open_periods": [
+      "早餐",
+      "午餐",
+      "晚餐",
+      "夜宵"
+    ],
+    "crowd_level": 3
+  },
+  {
+    "name": "三食堂",
+    "location": "东校区·体育馆一层",
+    "open_periods": [
+      "早餐",
+      "午餐",
+      "晚餐"
+    ],
+    "crowd_level": 2
+  }
+];
+
+  global.DEMO_DISHES = [
+  {
+    "id": "D1001",
+    "name": "麻婆豆腐",
+    "canteen": "一食堂",
+    "window": "3号窗口·川味小炒",
+    "price": 8,
+    "category": "荤菜",
+    "cuisine": "川菜",
+    "spicy_level": 4,
+    "flavors": [
+      "辣",
+      "麻",
+      "鲜"
+    ],
+    "ingredients": [
+      "豆腐",
+      "猪肉末",
+      "豆瓣酱",
+      "花椒"
+    ],
+    "allergens": [
+      "大豆"
+    ],
+    "dietary_tags": [
+      "高蛋白"
+    ],
+    "nutrition": {
+      "calories": 285,
+      "protein": 16.5,
+      "fat": 18.2,
+      "carbs": 12.4,
+      "sodium": 890
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.6,
+    "rating_count": 328,
+    "popularity": 512,
+    "wait_minutes": 6,
+    "available": true,
+    "signature": true,
+    "description": "郫县豆瓣打底，花椒现磨，麻辣鲜香，配白饭最下饭。"
+  },
+  {
+    "id": "D1002",
+    "name": "番茄炒蛋",
+    "canteen": "一食堂",
+    "window": "1号窗口·家常菜",
+    "price": 7,
+    "category": "荤菜",
+    "cuisine": "家常菜",
+    "spicy_level": 0,
+    "flavors": [
+      "酸",
+      "甜",
+      "鲜"
+    ],
+    "ingredients": [
+      "番茄",
+      "鸡蛋",
+      "小葱"
+    ],
+    "allergens": [
+      "蛋类"
+    ],
+    "dietary_tags": [],
+    "nutrition": {
+      "calories": 198,
+      "protein": 11.2,
+      "fat": 13.4,
+      "carbs": 8.6,
+      "sodium": 520
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.4,
+    "rating_count": 415,
+    "popularity": 604,
+    "wait_minutes": 4,
+    "available": true,
+    "signature": false,
+    "description": "番茄炒到出汁，鸡蛋嫩滑，酸甜开胃的国民下饭菜。"
+  },
+  {
+    "id": "D1003",
+    "name": "白米饭",
+    "canteen": "一食堂",
+    "window": "1号窗口·家常菜",
+    "price": 1,
+    "category": "主食",
+    "cuisine": "家常菜",
+    "spicy_level": 0,
+    "flavors": [
+      "清淡"
+    ],
+    "ingredients": [
+      "大米"
+    ],
+    "allergens": [],
+    "dietary_tags": [
+      "素食",
+      "纯素",
+      "低脂"
+    ],
+    "nutrition": {
+      "calories": 232,
+      "protein": 4.8,
+      "fat": 0.6,
+      "carbs": 51.2,
+      "sodium": 4
+    },
+    "meal_periods": [
+      "早餐",
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.1,
+    "rating_count": 892,
+    "popularity": 1580,
+    "wait_minutes": 2,
+    "available": true,
+    "signature": false,
+    "description": "东北长粒香米，粒粒分明，配任何菜都合适。"
+  },
+  {
+    "id": "D1004",
+    "name": "清炒时蔬",
+    "canteen": "一食堂",
+    "window": "1号窗口·家常菜",
+    "price": 5,
+    "category": "素菜",
+    "cuisine": "家常菜",
+    "spicy_level": 0,
+    "flavors": [
+      "清淡",
+      "蒜香"
+    ],
+    "ingredients": [
+      "上海青",
+      "蒜"
+    ],
+    "allergens": [],
+    "dietary_tags": [
+      "素食",
+      "纯素",
+      "低脂",
+      "低碳水"
+    ],
+    "nutrition": {
+      "calories": 96,
+      "protein": 3.1,
+      "fat": 6.2,
+      "carbs": 6.4,
+      "sodium": 380
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4,
+    "rating_count": 267,
+    "popularity": 431,
+    "wait_minutes": 3,
+    "available": true,
+    "signature": false,
+    "description": "当日现摘绿叶菜，蒜末爆香快炒，油少不塌。"
+  },
+  {
+    "id": "D1005",
+    "name": "紫菜蛋花汤",
+    "canteen": "一食堂",
+    "window": "5号窗口·汤品",
+    "price": 3,
+    "category": "汤品",
+    "cuisine": "家常菜",
+    "spicy_level": 0,
+    "flavors": [
+      "鲜",
+      "清淡"
+    ],
+    "ingredients": [
+      "紫菜",
+      "鸡蛋",
+      "虾皮"
+    ],
+    "allergens": [
+      "蛋类",
+      "海鲜"
+    ],
+    "dietary_tags": [
+      "低脂",
+      "低碳水"
+    ],
+    "nutrition": {
+      "calories": 62,
+      "protein": 4.6,
+      "fat": 2.8,
+      "carbs": 4.1,
+      "sodium": 640
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.2,
+    "rating_count": 203,
+    "popularity": 388,
+    "wait_minutes": 2,
+    "available": true,
+    "signature": false,
+    "description": "紫菜提鲜，蛋花打得细，三块钱的暖胃汤。"
+  },
+  {
+    "id": "D1006",
+    "name": "香菇滑鸡饭",
+    "canteen": "一食堂",
+    "window": "4号窗口·煲仔饭",
+    "price": 14,
+    "category": "套餐",
+    "cuisine": "粤菜",
+    "spicy_level": 0,
+    "flavors": [
+      "鲜",
+      "酱香"
+    ],
+    "ingredients": [
+      "鸡腿肉",
+      "香菇",
+      "大米",
+      "姜"
+    ],
+    "allergens": [
+      "大豆"
+    ],
+    "dietary_tags": [
+      "高蛋白"
+    ],
+    "nutrition": {
+      "calories": 618,
+      "protein": 32.4,
+      "fat": 19.8,
+      "carbs": 72.6,
+      "sodium": 1020
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.7,
+    "rating_count": 486,
+    "popularity": 702,
+    "wait_minutes": 12,
+    "available": true,
+    "signature": true,
+    "description": "砂锅现焗，锅底带焦香饭焦，鸡肉滑嫩，淋豉油拌开。"
+  },
+  {
+    "id": "D1007",
+    "name": "水煮肉片",
+    "canteen": "一食堂",
+    "window": "3号窗口·川味小炒",
+    "price": 16,
+    "category": "荤菜",
+    "cuisine": "川菜",
+    "spicy_level": 5,
+    "flavors": [
+      "辣",
+      "麻",
+      "油腻"
+    ],
+    "ingredients": [
+      "猪里脊",
+      "豆芽",
+      "干辣椒",
+      "花椒",
+      "莴笋"
+    ],
+    "allergens": [
+      "大豆"
+    ],
+    "dietary_tags": [
+      "高蛋白"
+    ],
+    "nutrition": {
+      "calories": 512,
+      "protein": 28.6,
+      "fat": 38.4,
+      "carbs": 11.2,
+      "sodium": 1480
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.8,
+    "rating_count": 392,
+    "popularity": 468,
+    "wait_minutes": 10,
+    "available": true,
+    "signature": true,
+    "description": "红油滚一层，肉片上浆嫩滑，辣得直接，重口味首选。"
+  },
+  {
+    "id": "D1008",
+    "name": "现磨豆浆",
+    "canteen": "一食堂",
+    "window": "6号窗口·早点",
+    "price": 2,
+    "category": "饮品",
+    "cuisine": "家常菜",
+    "spicy_level": 0,
+    "flavors": [
+      "甜",
+      "清淡"
+    ],
+    "ingredients": [
+      "黄豆"
+    ],
+    "allergens": [
+      "大豆"
+    ],
+    "dietary_tags": [
+      "素食",
+      "纯素"
+    ],
+    "nutrition": {
+      "calories": 108,
+      "protein": 6.2,
+      "fat": 3.4,
+      "carbs": 12.8,
+      "sodium": 12
+    },
+    "meal_periods": [
+      "早餐"
+    ],
+    "rating": 4.3,
+    "rating_count": 512,
+    "popularity": 890,
+    "wait_minutes": 2,
+    "available": true,
+    "signature": false,
+    "description": "现磨不加香精，微甜，可选无糖，配灌饼刚好。"
+  },
+  {
+    "id": "D1009",
+    "name": "鸡蛋灌饼",
+    "canteen": "一食堂",
+    "window": "6号窗口·早点",
+    "price": 5,
+    "category": "小吃",
+    "cuisine": "家常菜",
+    "spicy_level": 1,
+    "flavors": [
+      "咸",
+      "酱香"
+    ],
+    "ingredients": [
+      "面粉",
+      "鸡蛋",
+      "生菜",
+      "里脊肉"
+    ],
+    "allergens": [
+      "蛋类",
+      "麸质"
+    ],
+    "dietary_tags": [],
+    "nutrition": {
+      "calories": 386,
+      "protein": 14.2,
+      "fat": 16.8,
+      "carbs": 44.2,
+      "sodium": 720
+    },
+    "meal_periods": [
+      "早餐"
+    ],
+    "rating": 4.5,
+    "rating_count": 634,
+    "popularity": 1120,
+    "wait_minutes": 8,
+    "available": true,
+    "signature": true,
+    "description": "现摊现灌蛋液，饼皮起层，甜面酱加辣度可自选。"
+  },
+  {
+    "id": "D1010",
+    "name": "鲜肉小笼包",
+    "canteen": "一食堂",
+    "window": "6号窗口·早点",
+    "price": 6,
+    "category": "主食",
+    "cuisine": "淮扬菜",
+    "spicy_level": 0,
+    "flavors": [
+      "鲜",
+      "咸"
+    ],
+    "ingredients": [
+      "面粉",
+      "猪肉馅",
+      "姜"
+    ],
+    "allergens": [
+      "麸质"
+    ],
+    "dietary_tags": [],
+    "nutrition": {
+      "calories": 342,
+      "protein": 15.6,
+      "fat": 14.2,
+      "carbs": 38.4,
+      "sodium": 680
+    },
+    "meal_periods": [
+      "早餐"
+    ],
+    "rating": 4.4,
+    "rating_count": 388,
+    "popularity": 726,
+    "wait_minutes": 5,
+    "available": true,
+    "signature": false,
+    "description": "一笼六只，薄皮带汤汁，配醋和姜丝解腻。"
+  },
+  {
+    "id": "D1011",
+    "name": "兰州牛肉面",
+    "canteen": "二食堂",
+    "window": "1号窗口·西北面食",
+    "price": 12,
+    "category": "主食",
+    "cuisine": "西北菜",
+    "spicy_level": 2,
+    "flavors": [
+      "鲜",
+      "咸"
+    ],
+    "ingredients": [
+      "拉面",
+      "牛肉",
+      "白萝卜",
+      "香菜",
+      "辣椒油"
+    ],
+    "allergens": [
+      "麸质"
+    ],
+    "dietary_tags": [
+      "清真",
+      "高蛋白"
+    ],
+    "nutrition": {
+      "calories": 528,
+      "protein": 26.8,
+      "fat": 14.6,
+      "carbs": 74.2,
+      "sodium": 1620
+    },
+    "meal_periods": [
+      "早餐",
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.7,
+    "rating_count": 721,
+    "popularity": 1240,
+    "wait_minutes": 14,
+    "available": true,
+    "signature": true,
+    "description": "牛骨汤吊足六小时，面现拉，宽细自选，香菜蒜苗可免。"
+  },
+  {
+    "id": "D1012",
+    "name": "剁椒鱼头",
+    "canteen": "二食堂",
+    "window": "3号窗口·湘味",
+    "price": 22,
+    "category": "荤菜",
+    "cuisine": "湘菜",
+    "spicy_level": 4,
+    "flavors": [
+      "辣",
+      "咸",
+      "鲜"
+    ],
+    "ingredients": [
+      "鳙鱼头",
+      "剁椒",
+      "豆豉",
+      "蒸鱼豉油"
+    ],
+    "allergens": [
+      "海鲜",
+      "大豆"
+    ],
+    "dietary_tags": [
+      "高蛋白"
+    ],
+    "nutrition": {
+      "calories": 336,
+      "protein": 34.2,
+      "fat": 18.4,
+      "carbs": 6.8,
+      "sodium": 1560
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.6,
+    "rating_count": 218,
+    "popularity": 256,
+    "wait_minutes": 15,
+    "available": true,
+    "signature": true,
+    "description": "两人份的量，剁椒是自家腌的，鱼肉嫩，汤汁拌面绝配。"
+  },
+  {
+    "id": "D1013",
+    "name": "糖醋里脊",
+    "canteen": "二食堂",
+    "window": "2号窗口·热炒",
+    "price": 13,
+    "category": "荤菜",
+    "cuisine": "鲁菜",
+    "spicy_level": 0,
+    "flavors": [
+      "酸",
+      "甜"
+    ],
+    "ingredients": [
+      "猪里脊",
+      "番茄酱",
+      "淀粉",
+      "青椒"
+    ],
+    "allergens": [
+      "麸质"
+    ],
+    "dietary_tags": [
+      "高蛋白"
+    ],
+    "nutrition": {
+      "calories": 468,
+      "protein": 22.4,
+      "fat": 24.6,
+      "carbs": 42.8,
+      "sodium": 720
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.5,
+    "rating_count": 356,
+    "popularity": 512,
+    "wait_minutes": 9,
+    "available": true,
+    "signature": false,
+    "description": "外壳脆，酸甜挂汁均匀，不吃辣的稳妥选择。"
+  },
+  {
+    "id": "D1014",
+    "name": "干锅花菜",
+    "canteen": "二食堂",
+    "window": "3号窗口·湘味",
+    "price": 10,
+    "category": "素菜",
+    "cuisine": "湘菜",
+    "spicy_level": 3,
+    "flavors": [
+      "辣",
+      "咸",
+      "蒜香"
+    ],
+    "ingredients": [
+      "有机花菜",
+      "干辣椒",
+      "蒜",
+      "五花肉"
+    ],
+    "allergens": [],
+    "dietary_tags": [],
+    "nutrition": {
+      "calories": 246,
+      "protein": 8.6,
+      "fat": 17.2,
+      "carbs": 15.4,
+      "sodium": 880
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.6,
+    "rating_count": 294,
+    "popularity": 462,
+    "wait_minutes": 7,
+    "available": true,
+    "signature": false,
+    "description": "花菜煸到微焦有嚼劲，带少量五花肉提香，可要求纯素做法。"
+  },
+  {
+    "id": "D1015",
+    "name": "麻辣香锅",
+    "canteen": "二食堂",
+    "window": "5号窗口·自选香锅",
+    "price": 18,
+    "category": "套餐",
+    "cuisine": "川菜",
+    "spicy_level": 4,
+    "flavors": [
+      "辣",
+      "麻",
+      "油腻"
+    ],
+    "ingredients": [
+      "宽粉",
+      "藕片",
+      "午餐肉",
+      "虾滑",
+      "花椒"
+    ],
+    "allergens": [
+      "海鲜",
+      "大豆",
+      "麸质"
+    ],
+    "dietary_tags": [],
+    "nutrition": {
+      "calories": 726,
+      "protein": 24.8,
+      "fat": 46.2,
+      "carbs": 52.4,
+      "sodium": 1980
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.7,
+    "rating_count": 812,
+    "popularity": 1060,
+    "wait_minutes": 18,
+    "available": true,
+    "signature": true,
+    "description": "自选食材按份计价，辣度分微中重，宽粉和藕片是必点。"
+  },
+  {
+    "id": "D1016",
+    "name": "蜜汁鸡腿饭",
+    "canteen": "二食堂",
+    "window": "6号窗口·快餐",
+    "price": 15,
+    "category": "套餐",
+    "cuisine": "快餐",
+    "spicy_level": 0,
+    "flavors": [
+      "甜",
+      "酱香"
+    ],
+    "ingredients": [
+      "鸡腿",
+      "蜂蜜",
+      "大米",
+      "西兰花"
+    ],
+    "allergens": [
+      "大豆"
+    ],
+    "dietary_tags": [
+      "高蛋白"
+    ],
+    "nutrition": {
+      "calories": 662,
+      "protein": 34.6,
+      "fat": 22.4,
+      "carbs": 76.8,
+      "sodium": 940
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.4,
+    "rating_count": 428,
+    "popularity": 688,
+    "wait_minutes": 6,
+    "available": true,
+    "signature": false,
+    "description": "去骨鸡腿刷蜜汁烤制，配西兰花和饭，出餐快不用等。"
+  },
+  {
+    "id": "D1017",
+    "name": "酸辣粉",
+    "canteen": "二食堂",
+    "window": "4号窗口·小吃",
+    "price": 8,
+    "category": "小吃",
+    "cuisine": "川菜",
+    "spicy_level": 3,
+    "flavors": [
+      "酸",
+      "辣",
+      "麻"
+    ],
+    "ingredients": [
+      "红薯粉",
+      "花生碎",
+      "香菜",
+      "醋",
+      "油辣子"
+    ],
+    "allergens": [
+      "花生",
+      "大豆"
+    ],
+    "dietary_tags": [],
+    "nutrition": {
+      "calories": 396,
+      "protein": 7.2,
+      "fat": 14.6,
+      "carbs": 58.4,
+      "sodium": 1420
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐",
+      "夜宵"
+    ],
+    "rating": 4.5,
+    "rating_count": 566,
+    "popularity": 824,
+    "wait_minutes": 5,
+    "available": true,
+    "signature": false,
+    "description": "红薯粉筋道，醋和油辣子分开加，酸味给得足。"
+  },
+  {
+    "id": "D1018",
+    "name": "皮蛋瘦肉粥",
+    "canteen": "二食堂",
+    "window": "7号窗口·粥品",
+    "price": 6,
+    "category": "主食",
+    "cuisine": "粤菜",
+    "spicy_level": 0,
+    "flavors": [
+      "鲜",
+      "咸",
+      "清淡"
+    ],
+    "ingredients": [
+      "大米",
+      "皮蛋",
+      "猪瘦肉",
+      "姜丝"
+    ],
+    "allergens": [
+      "蛋类"
+    ],
+    "dietary_tags": [
+      "低脂"
+    ],
+    "nutrition": {
+      "calories": 268,
+      "protein": 13.4,
+      "fat": 6.2,
+      "carbs": 40.6,
+      "sodium": 720
+    },
+    "meal_periods": [
+      "早餐",
+      "夜宵"
+    ],
+    "rating": 4.3,
+    "rating_count": 312,
+    "popularity": 528,
+    "wait_minutes": 4,
+    "available": true,
+    "signature": false,
+    "description": "米粒熬开花，粥底绵，胃不舒服的时候来一碗。"
+  },
+  {
+    "id": "D1019",
+    "name": "清蒸鲈鱼",
+    "canteen": "二食堂",
+    "window": "2号窗口·热炒",
+    "price": 20,
+    "category": "荤菜",
+    "cuisine": "粤菜",
+    "spicy_level": 0,
+    "flavors": [
+      "鲜",
+      "清淡"
+    ],
+    "ingredients": [
+      "鲈鱼",
+      "葱丝",
+      "蒸鱼豉油",
+      "姜"
+    ],
+    "allergens": [
+      "海鲜",
+      "大豆"
+    ],
+    "dietary_tags": [
+      "高蛋白",
+      "低脂",
+      "低碳水"
+    ],
+    "nutrition": {
+      "calories": 196,
+      "protein": 32.8,
+      "fat": 6.4,
+      "carbs": 2.2,
+      "sodium": 680
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.5,
+    "rating_count": 176,
+    "popularity": 214,
+    "wait_minutes": 12,
+    "available": true,
+    "signature": false,
+    "description": "整条现蒸八分钟，只调豉油和葱姜，吃鱼本味，减脂期友好。"
+  },
+  {
+    "id": "D1020",
+    "name": "冬瓜排骨汤",
+    "canteen": "二食堂",
+    "window": "7号窗口·粥品",
+    "price": 7,
+    "category": "汤品",
+    "cuisine": "粤菜",
+    "spicy_level": 0,
+    "flavors": [
+      "鲜",
+      "清淡"
+    ],
+    "ingredients": [
+      "冬瓜",
+      "猪肋排",
+      "枸杞"
+    ],
+    "allergens": [],
+    "dietary_tags": [
+      "低碳水"
+    ],
+    "nutrition": {
+      "calories": 168,
+      "protein": 12.6,
+      "fat": 10.4,
+      "carbs": 5.8,
+      "sodium": 620
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.4,
+    "rating_count": 232,
+    "popularity": 356,
+    "wait_minutes": 3,
+    "available": true,
+    "signature": false,
+    "description": "排骨炖到脱骨，冬瓜透亮，汤清不油，配重口味的菜正好。"
+  },
+  {
+    "id": "D1021",
+    "name": "香煎鸡胸沙拉",
+    "canteen": "三食堂",
+    "window": "1号窗口·轻食",
+    "price": 16,
+    "category": "套餐",
+    "cuisine": "西式",
+    "spicy_level": 0,
+    "flavors": [
+      "清淡",
+      "酸"
+    ],
+    "ingredients": [
+      "鸡胸肉",
+      "生菜",
+      "圣女果",
+      "玉米粒",
+      "油醋汁"
+    ],
+    "allergens": [],
+    "dietary_tags": [
+      "低脂",
+      "高蛋白",
+      "低碳水",
+      "低糖"
+    ],
+    "nutrition": {
+      "calories": 312,
+      "protein": 36.4,
+      "fat": 9.8,
+      "carbs": 18.6,
+      "sodium": 480
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.3,
+    "rating_count": 268,
+    "popularity": 402,
+    "wait_minutes": 5,
+    "available": true,
+    "signature": true,
+    "description": "鸡胸低温慢煎不柴，油醋汁另配，蛋白质给得足，减脂首选。"
+  },
+  {
+    "id": "D1022",
+    "name": "全麦火腿三明治",
+    "canteen": "三食堂",
+    "window": "1号窗口·轻食",
+    "price": 10,
+    "category": "主食",
+    "cuisine": "西式",
+    "spicy_level": 0,
+    "flavors": [
+      "咸",
+      "清淡"
+    ],
+    "ingredients": [
+      "全麦面包",
+      "火腿",
+      "鸡蛋",
+      "芝士片",
+      "生菜"
+    ],
+    "allergens": [
+      "麸质",
+      "蛋类",
+      "乳制品"
+    ],
+    "dietary_tags": [],
+    "nutrition": {
+      "calories": 368,
+      "protein": 18.2,
+      "fat": 15.4,
+      "carbs": 38.6,
+      "sodium": 860
+    },
+    "meal_periods": [
+      "早餐",
+      "午餐"
+    ],
+    "rating": 4.1,
+    "rating_count": 194,
+    "popularity": 316,
+    "wait_minutes": 2,
+    "available": true,
+    "signature": false,
+    "description": "现做冷藏，全麦粗粮口感，赶时间抓一个就走。"
+  },
+  {
+    "id": "D1023",
+    "name": "石锅拌饭",
+    "canteen": "三食堂",
+    "window": "3号窗口·日韩料理",
+    "price": 17,
+    "category": "套餐",
+    "cuisine": "日韩",
+    "spicy_level": 2,
+    "flavors": [
+      "辣",
+      "甜",
+      "酱香"
+    ],
+    "ingredients": [
+      "大米",
+      "牛肉粒",
+      "泡菜",
+      "溶蛋",
+      "韩式辣酱"
+    ],
+    "allergens": [
+      "蛋类",
+      "大豆"
+    ],
+    "dietary_tags": [
+      "高蛋白"
+    ],
+    "nutrition": {
+      "calories": 648,
+      "protein": 26.2,
+      "fat": 20.8,
+      "carbs": 86.4,
+      "sodium": 1340
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.6,
+    "rating_count": 396,
+    "popularity": 574,
+    "wait_minutes": 11,
+    "available": true,
+    "signature": true,
+    "description": "石锅烧到滚烫，拌开有锅巴，辣酱另给可控辣度。"
+  },
+  {
+    "id": "D1024",
+    "name": "豚骨拉面",
+    "canteen": "三食堂",
+    "window": "3号窗口·日韩料理",
+    "price": 19,
+    "category": "主食",
+    "cuisine": "日韩",
+    "spicy_level": 0,
+    "flavors": [
+      "鲜",
+      "咸",
+      "油腻"
+    ],
+    "ingredients": [
+      "拉面",
+      "叉烧",
+      "溶蛋",
+      "海苔",
+      "笋干"
+    ],
+    "allergens": [
+      "麸质",
+      "蛋类",
+      "大豆",
+      "海鲜"
+    ],
+    "dietary_tags": [
+      "高蛋白"
+    ],
+    "nutrition": {
+      "calories": 712,
+      "protein": 30.4,
+      "fat": 32.6,
+      "carbs": 78.2,
+      "sodium": 2140
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.5,
+    "rating_count": 284,
+    "popularity": 386,
+    "wait_minutes": 13,
+    "available": true,
+    "signature": false,
+    "description": "汤头熬得浓白，叉烧两片带油边，重盐重脂，吃完记得多喝水。"
+  },
+  {
+    "id": "D1025",
+    "name": "芝士焗饭",
+    "canteen": "三食堂",
+    "window": "2号窗口·西餐",
+    "price": 18,
+    "category": "套餐",
+    "cuisine": "西式",
+    "spicy_level": 0,
+    "flavors": [
+      "咸",
+      "鲜",
+      "油腻"
+    ],
+    "ingredients": [
+      "大米",
+      "马苏里拉芝士",
+      "培根",
+      "口蘑",
+      "淡奶油"
+    ],
+    "allergens": [
+      "乳制品",
+      "麸质"
+    ],
+    "dietary_tags": [],
+    "nutrition": {
+      "calories": 758,
+      "protein": 24.6,
+      "fat": 38.2,
+      "carbs": 82.4,
+      "sodium": 1180
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.4,
+    "rating_count": 216,
+    "popularity": 298,
+    "wait_minutes": 16,
+    "available": false,
+    "signature": false,
+    "description": "厚芝士拉丝，烤箱现焗，今日设备维修暂停供应。"
+  },
+  {
+    "id": "D1026",
+    "name": "藜麦鸡丁饭",
+    "canteen": "三食堂",
+    "window": "1号窗口·轻食",
+    "price": 19,
+    "category": "套餐",
+    "cuisine": "西式",
+    "spicy_level": 1,
+    "flavors": [
+      "清淡",
+      "蒜香"
+    ],
+    "ingredients": [
+      "藜麦",
+      "鸡胸肉",
+      "牛油果",
+      "彩椒"
+    ],
+    "allergens": [],
+    "dietary_tags": [
+      "高蛋白",
+      "低脂",
+      "低糖"
+    ],
+    "nutrition": {
+      "calories": 486,
+      "protein": 38.2,
+      "fat": 16.4,
+      "carbs": 46.8,
+      "sodium": 520
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.2,
+    "rating_count": 142,
+    "popularity": 208,
+    "wait_minutes": 7,
+    "available": true,
+    "signature": false,
+    "description": "三色藜麦替代白米，升糖慢，健身增肌那批人常点。"
+  },
+  {
+    "id": "D1027",
+    "name": "冬阴功汤",
+    "canteen": "三食堂",
+    "window": "4号窗口·东南亚",
+    "price": 12,
+    "category": "汤品",
+    "cuisine": "西式",
+    "spicy_level": 3,
+    "flavors": [
+      "酸",
+      "辣",
+      "鲜"
+    ],
+    "ingredients": [
+      "虾",
+      "香茅",
+      "椰奶",
+      "柠檬叶",
+      "小米辣"
+    ],
+    "allergens": [
+      "海鲜",
+      "乳制品"
+    ],
+    "dietary_tags": [
+      "低碳水"
+    ],
+    "nutrition": {
+      "calories": 208,
+      "protein": 14.6,
+      "fat": 13.8,
+      "carbs": 8.4,
+      "sodium": 1080
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.4,
+    "rating_count": 158,
+    "popularity": 196,
+    "wait_minutes": 6,
+    "available": true,
+    "signature": true,
+    "description": "酸辣打头，椰奶收尾，香茅味很正，配白饭能吃两碗。"
+  },
+  {
+    "id": "D1028",
+    "name": "现磨美式咖啡",
+    "canteen": "三食堂",
+    "window": "5号窗口·饮品",
+    "price": 8,
+    "category": "饮品",
+    "cuisine": "西式",
+    "spicy_level": 0,
+    "flavors": [
+      "清淡"
+    ],
+    "ingredients": [
+      "咖啡豆"
+    ],
+    "allergens": [],
+    "dietary_tags": [
+      "素食",
+      "纯素",
+      "低脂",
+      "低碳水",
+      "低糖"
+    ],
+    "nutrition": {
+      "calories": 8,
+      "protein": 0.4,
+      "fat": 0.1,
+      "carbs": 1.2,
+      "sodium": 6
+    },
+    "meal_periods": [
+      "早餐",
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.2,
+    "rating_count": 342,
+    "popularity": 612,
+    "wait_minutes": 4,
+    "available": true,
+    "signature": false,
+    "description": "当天现磨的豆子，冰热同价，下午赶实验室的续命水。"
+  },
+  {
+    "id": "D1029",
+    "name": "鲜榨橙汁",
+    "canteen": "三食堂",
+    "window": "5号窗口·饮品",
+    "price": 6,
+    "category": "饮品",
+    "cuisine": "西式",
+    "spicy_level": 0,
+    "flavors": [
+      "酸",
+      "甜"
+    ],
+    "ingredients": [
+      "橙子"
+    ],
+    "allergens": [],
+    "dietary_tags": [
+      "素食",
+      "纯素",
+      "低脂"
+    ],
+    "nutrition": {
+      "calories": 112,
+      "protein": 1.8,
+      "fat": 0.4,
+      "carbs": 26.4,
+      "sodium": 4
+    },
+    "meal_periods": [
+      "早餐",
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4.3,
+    "rating_count": 276,
+    "popularity": 448,
+    "wait_minutes": 3,
+    "available": true,
+    "signature": false,
+    "description": "两个橙子现榨一杯，不加水不加糖，酸得很实在。"
+  },
+  {
+    "id": "D1030",
+    "name": "烤时蔬拼盘",
+    "canteen": "三食堂",
+    "window": "2号窗口·西餐",
+    "price": 12,
+    "category": "素菜",
+    "cuisine": "西式",
+    "spicy_level": 0,
+    "flavors": [
+      "清淡",
+      "蒜香"
+    ],
+    "ingredients": [
+      "西葫芦",
+      "彩椒",
+      "口蘑",
+      "紫洋葱",
+      "橄榄油"
+    ],
+    "allergens": [],
+    "dietary_tags": [
+      "素食",
+      "纯素",
+      "低脂",
+      "低碳水",
+      "低糖"
+    ],
+    "nutrition": {
+      "calories": 156,
+      "protein": 4.2,
+      "fat": 9.6,
+      "carbs": 14.8,
+      "sodium": 320
+    },
+    "meal_periods": [
+      "午餐",
+      "晚餐"
+    ],
+    "rating": 4,
+    "rating_count": 118,
+    "popularity": 164,
+    "wait_minutes": 8,
+    "available": true,
+    "signature": false,
+    "description": "橄榄油加黑胡椒海盐烤制，纯素可食，蔬菜量一顿就够。"
+  }
+];
+})(typeof window !== "undefined" ? window : globalThis);
