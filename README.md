@@ -43,7 +43,10 @@ backend/
       keyword_rules.py      降级用的词表与正则
       comment_writer.py     推荐语生成，失败用规则理由兜底
       orchestrator.py       四层串联，产出 RecommendResponse
-    api/             FastAPI 路由（待建）
+    api/
+      routes.py      推荐、菜品查询、食堂列表、探活
+      schemas.py     接口请求体与响应体
+    main.py          应用入口、CORS、异常处理
   tests/
 ```
 
@@ -102,7 +105,7 @@ backend/
 - [x] 打分排序器：六维加权、场景化权重、多样性约束
 - [x] 千帆平台客户端：token 缓存、超时重试、熔断降级
 - [x] Agent 编排：偏好解析 + 推荐语生成 + 凑整餐
-- [ ] FastAPI 接口
+- [x] FastAPI 接口：推荐、菜品查询、食堂列表、探活
 - [ ] 前端页面
 
 ## 本地运行
@@ -119,7 +122,35 @@ source .venv/bin/activate
 
 pip install -r requirements.txt
 pytest
+
+# 起服务
+uvicorn app.main:app --reload
 ```
+
+启动后 <http://127.0.0.1:8000/docs> 是自动生成的接口文档，可以直接在页面上试。
+`/api/health` 会告诉你当前是 `full` 还是 `rule-only` 模式。
+
+## 接口
+
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| POST | `/api/recommend` | 按偏好推荐，body 收 `text` 或结构化 `preference` |
+| GET | `/api/dishes` | 菜品查询，支持关键词/食堂/品类/菜系/餐段筛选 |
+| GET | `/api/dishes/{id}` | 单道菜详情 |
+| GET | `/api/canteens` | 食堂列表（含拥挤度） |
+| GET | `/api/health` | 探活，回报千帆配置与可用状态 |
+
+推荐接口的最小请求：
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/recommend \
+  -H "Content-Type: application/json" \
+  -d '{"text":"想吃点辣的，20块以内，最近在减脂","limit":3}'
+```
+
+响应里除了菜品和推荐语，还带 `breakdown`（各维度得分明细）、
+`parsed_preference`（系统怎么理解你的话，供前端回显确认）、
+`total_candidates`（过滤后进入打分的菜数）和 `fallback_used`（是否降级）。
 
 ## 配置千帆
 

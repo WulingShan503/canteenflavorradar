@@ -25,6 +25,10 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
 | 模型调用 | `app/services/qianfan_client.py` | 只管发请求，失败抛异常不兜底 |
 | HTTP 接口 | `app/api/` | FastAPI 路由，薄一层 |
 
+接口层的约定：`app/api/schemas.py` 是对外契约，和 `app/models/` 的领域模型分开，
+改内部字段不直接破坏前端。路由函数只做「校验参数 → 调一层业务 → 返回」，
+不写业务逻辑。`QianfanError` 不会漏到路由层——编排层已经降级成规则结果了。
+
 铁律：
 
 - **过敏原、饮食限制（素食/清真等）永远由规则层拦截，绝不写成 prompt 约束。**
@@ -92,14 +96,16 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
 - [x] `app/agent/`：`PreferenceParser`（模型 JSON + 关键词规则降级）、
       `keyword_rules.py`（词表与正则）、`CommentWriter`（规则理由作事实依据）、
       `RecommendAgent`（四层串联 + 凑整餐）
-- [ ] **下一步：FastAPI 接口 `app/api/`**
-      `POST /api/recommend`（body 收 text 或结构化 preference）、
-      `GET /api/dishes`（查询/搜索）、`GET /api/canteens`。
-      路由要薄：只做请求校验和依赖注入，业务逻辑全在 agent/services 里。
-      `main.py` 里配 CORS、lifespan 关闭时调 `close_client()`、
-      挂 `/health` 探活并回报 `qianfan_configured()` 状态。
-      异常处理：`QianfanError` 不该漏成 500，编排层已兜底，
-      路由层只需处理请求参数错误（422）和未知异常
+- [x] `app/api/`（routes + schemas）与 `app/main.py`：五个接口、CORS、
+      lifespan 预热与释放连接池、中文化的 422 报错、500 兜底不漏堆栈
+- [ ] **下一步：前端页面**
+      一个单页就够：输入框收自然语言 + 可选的偏好表单，
+      调 `POST /api/recommend` 渲染菜品卡片。
+      要展示 `breakdown` 各维度得分（这是本项目「可解释」的卖点），
+      `fallback_used` 为 True 时提示「智能解析暂时不可用」，
+      `message` 非空时展示放宽说明。
+      技术选型待定，纯静态 HTML + 原生 JS 最省事，
+      放 `frontend/` 目录，别引一堆构建工具
 - [ ] Agent 编排 `app/agent/`：偏好解析 + 推荐语生成 + 凑整餐 MealPlan
 - [ ] FastAPI 接口 `app/api/`：推荐、菜品查询、食堂列表
 - [ ] 前端页面
