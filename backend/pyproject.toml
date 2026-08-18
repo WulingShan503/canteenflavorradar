@@ -1,0 +1,17 @@
+[project]
+name = "canteen-flavor-radar-backend"
+version = "0.1.0"
+description = "食堂味蕾雷达 - 基于大模型 Agent 的食堂选餐系统后端"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

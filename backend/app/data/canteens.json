@@ -1,0 +1,20 @@
+[
+  {
+    "name": "一食堂",
+    "location": "主校区·中心广场东侧",
+    "open_periods": ["早餐", "午餐", "晚餐"],
+    "crowd_level": 4
+  },
+  {
+    "name": "二食堂",
+    "location": "主校区·图书馆北侧",
+    "open_periods": ["早餐", "午餐", "晚餐", "夜宵"],
+    "crowd_level": 3
+  },
+  {
+    "name": "三食堂",
+    "location": "东校区·体育馆一层",
+    "open_periods": ["早餐", "午餐", "晚餐"],
+    "crowd_level": 2
+  }
+]
