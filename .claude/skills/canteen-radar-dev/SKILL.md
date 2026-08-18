@@ -31,6 +31,11 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
 - 大模型调用一律要有降级路径，千帆不可用时系统降级但不能瘫痪，
   响应里用 `RecommendResponse.fallback_used` 标记。
 - 打分要保留各维度明细，不能只给总分——推荐理由要有据可依，调参也需要看是哪一维起作用。
+- 打分层只排序候选集，**不许把被过滤掉的菜捞回来**，也不许在这层做安全判断。
+- 权重之和必须为 100（`ScoreWeights.total()`），综合分才能落在 0-100；
+  新增权重方案时先跑 `TestWeights::test_all_weight_sets_sum_to_100`。
+- 用户没提的维度给中性分 `NEUTRAL`（0.5），不做惩罚；不能因为「没说预算」就扣分。
+- 排序必须稳定可复现：并列时按销量、评分、菜品 id 逐级兜底。
 - 千帆的 API Key 只从环境变量读，不写进代码或提交进仓库。
 
 ## 验证方式（重要）
@@ -62,11 +67,13 @@ description: 继续开发食堂味蕾雷达（食堂选餐 Agent 系统）。需
 - [x] 骨架、enums 共享词表、Dish/UserPreference/Recommendation 模型
 - [x] 示例数据 3 食堂 30 道菜（含过敏原、停供、各辣度边界）
 - [x] `DishRepository`：硬性过滤 + 逐级放宽 + pytest 用例
-- [ ] **下一步：`app/services/scorer.py` 打分排序器**
-      六维加权（口味/菜系/预算/营养/口碑/便利度），总分归一到 0-100，
-      填充 `ScoreBreakdown` 与规则版 `reasons`；`budget_min` 在这层降权处理
-      （过滤层故意没拦它，见 `_matches` 注释）
-- [ ] 千帆客户端 `app/services/qianfan_client.py`（httpx，超时/重试/降级）
+- [x] `DishScorer`：六维加权打分、三套场景权重、`rank_diverse` 多样性约束、
+      规则版 `reasons`；`build_reasons` 的输出后续要作为事实依据喂进推荐语 prompt
+- [ ] **下一步：千帆客户端 `app/services/qianfan_client.py`**
+      httpx 异步调用，access_token 缓存与刷新，超时/重试/熔断，
+      失败一律抛自定义异常交由上层降级——客户端本身不做业务兜底。
+      密钥走环境变量（`QIANFAN_AK` / `QIANFAN_SK`），不许进仓库，
+      同步补一份 `.env.example`
 - [ ] Agent 编排 `app/agent/`：偏好解析 + 推荐语生成 + 凑整餐 MealPlan
 - [ ] FastAPI 接口 `app/api/`：推荐、菜品查询、食堂列表
 - [ ] 前端页面
